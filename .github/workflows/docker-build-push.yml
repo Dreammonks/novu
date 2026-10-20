@@ -8,23 +8,23 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   build-and-push:
     name: Build & Push Images
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.0.9
+        uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22.23.2
           cache: "pnpm"
@@ -41,8 +41,6 @@ jobs:
         run: |
           pnpm --filter @novu/api-service deploy --legacy --prod apps/api/deploy
           cp -r apps/api/dist apps/api/deploy/dist
-          cp apps/api/src/.example.env apps/api/deploy/dist/.env
-          cp apps/api/src/.env.production apps/api/deploy/dist/.env.production
           if [ -f apps/api/deploy/dist/metadata.js ]; then
             sed -i \
               -e 's|../../../packages/shared/dist|../node_modules/@novu/shared/dist|g' \
@@ -55,14 +53,12 @@ jobs:
         run: |
           pnpm --filter @novu/worker deploy --legacy --prod apps/worker/deploy
           cp -r apps/worker/dist apps/worker/deploy/dist
-          cp apps/worker/src/.example.env apps/worker/deploy/dist/.env
-          cp apps/worker/src/.env.production apps/worker/deploy/dist/.env.production
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -70,7 +66,7 @@ jobs:
 
       - name: Docker metadata for novu-api
         id: meta-api
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/novu-api
           tags: |
@@ -79,7 +75,7 @@ jobs:
 
       - name: Docker metadata for novu-worker
         id: meta-worker
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/novu-worker
           tags: |
@@ -87,23 +83,23 @@ jobs:
             type=sha,format=short,prefix=
 
       - name: Build and push novu-api
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: ./apps/api
           file: ./apps/api/Dockerfile
           push: true
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
 
       - name: Build and push novu-worker
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: ./apps/worker
           file: ./apps/worker/Dockerfile
           push: true
           tags: ${{ steps.meta-worker.outputs.tags }}
           labels: ${{ steps.meta-worker.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=worker
+          cache-to: type=gha,mode=max,scope=worker

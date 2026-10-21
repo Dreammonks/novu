@@ -10,10 +10,6 @@ on:
         description: 'Comma-separated PR numbers (merged into next) to cherry-pick as a hotfix release. Leave empty for a regular full release.'
         required: false
         default: ''
-  # Triggers the workflow every work day at 8:00 UTC
-  # The 3 hour offset should change when daylight savings change for GMT +3.
-  schedule:
-    - cron: '0 8 * * 1,2,3,4,5'
 
 jobs:
   prepare-cloud-release:

@@ -64,4 +64,5 @@ jobs:
       - name: Build Dashboard
         env:
           NODE_OPTIONS: "--max-old-space-size=8192"
+          NX_NO_CLOUD: "true"
         run: pnpm build:dashboard

@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - next
+    paths:
+      - 'apps/api/**'
+      - 'apps/worker/**'
+      - 'libs/**'
+      - 'packages/**'
+      - '!packages/react/**'
+      - 'enterprise/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/docker-build-push.yml'
   workflow_dispatch:
 
 permissions:

@@ -6,6 +6,7 @@
     "bootstrap": "npm run setup:dev",
     "build:api": "nx build @novu/api-service",
     "build:dashboard": "nx build @novu/dashboard",
+    "deploy:dashboard": "wrangler pages deploy apps/dashboard/dist",
     "build:inbound-mail": "nx build @novu/inbound-mail",
     "build:packages": "nx run-many --target=build --all --projects=tag:type:package",
     "build:v2": "nx run-many --target=build --all --projects=@novu/api-service,@novu/worker,@novu/ws,@novu/dashboard,tag:type:package",
@@ -140,6 +141,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.6.2",
     "wait-port": "^0.3.0",
+    "wrangler": "^4.68.1",
     "yargs": "^17.7.2"
   },
   "workspaces": {

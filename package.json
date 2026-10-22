@@ -6,7 +6,7 @@
     "bootstrap": "npm run setup:dev",
     "build:api": "nx build @novu/api-service",
     "build:dashboard": "cross-env NX_NO_CLOUD=true nx build @novu/dashboard",
-    "deploy:dashboard": "wrangler pages deploy apps/dashboard/dist",
+    "deploy:dashboard": "wrangler pages deploy --cwd apps/dashboard",
     "build:inbound-mail": "nx build @novu/inbound-mail",
     "build:packages": "nx run-many --target=build --all --projects=tag:type:package",
     "build:v2": "nx run-many --target=build --all --projects=@novu/api-service,@novu/worker,@novu/ws,@novu/dashboard,tag:type:package",

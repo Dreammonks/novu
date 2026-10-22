@@ -1,0 +1,67 @@
+name: Check and Validate Dashboard
+
+on:
+  push:
+    branches:
+      - next
+    paths:
+      - 'apps/dashboard/**'
+      - 'packages/shared/**'
+      - 'packages/react/**'
+      - 'packages/js/**'
+      - 'packages/framework/**'
+      - 'packages/api/**'
+      - 'packages/maily-core/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/check-dashboard.yml'
+  pull_request:
+    branches:
+      - next
+    paths:
+      - 'apps/dashboard/**'
+      - 'packages/shared/**'
+      - 'packages/react/**'
+      - 'packages/js/**'
+      - 'packages/framework/**'
+      - 'packages/api/**'
+      - 'packages/maily-core/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/check-dashboard.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: dashboard-check-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-dashboard:
+    name: Typecheck & Build Dashboard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+        with:
+          version: 11.0.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22.23.2
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck Dashboard
+        run: pnpm --filter @novu/dashboard typecheck
+
+      - name: Build Dashboard
+        env:
+          NODE_OPTIONS: "--max-old-space-size=8192"
+        run: pnpm build:dashboard

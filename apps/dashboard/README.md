@@ -23,6 +23,7 @@ export default tseslint.config({
     },
   },
 });
+
 ```
 
 - Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
@@ -47,4 +48,5 @@ export default tseslint.config({
     ...react.configs['jsx-runtime'].rules,
   },
 });
+
 ```

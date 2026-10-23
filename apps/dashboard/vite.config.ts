@@ -132,7 +132,7 @@ export default defineConfig(({ mode }) => {
     build: {
       // Vite 6 default ('modules'); Vite 8 defaults to Safari 16.4 / Chrome 111.
       target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
-      sourcemap: true,
+      sourcemap: Boolean(env.SENTRY_AUTH_TOKEN || env.GENERATE_SOURCEMAP === 'true'),
       chunkSizeWarningLimit: 12000,
     },
   };

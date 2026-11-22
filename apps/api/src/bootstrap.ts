@@ -48,7 +48,7 @@ class BootstrapOptions {
 
 export async function bootstrap(
   bootstrapOptions?: BootstrapOptions
-): Promise<{ app: INestApplication; document: Awaited<ReturnType<typeof setupSwagger>> }> {
+): Promise<{ app: INestApplication; document?: Awaited<ReturnType<typeof setupSwagger>> }> {
   const agentRawBodyBuffer = (_req, _res, buffer, _encoding): void => {
     if (buffer?.length) {
       // eslint-disable-next-line no-param-reassign
@@ -166,7 +166,11 @@ export async function bootstrap(
   );
 
   let document: Awaited<ReturnType<typeof setupSwagger>> | undefined;
-  if (process.env.SWAGGER_ENABLED === 'true' || process.env.NODE_ENV !== 'production') {
+  if (
+    process.env.SWAGGER_ENABLED === 'true' ||
+    process.env.NODE_ENV !== 'production' ||
+    bootstrapOptions?.internalSdkGeneration
+  ) {
     document = await setupSwagger(app, bootstrapOptions?.internalSdkGeneration);
   }
 

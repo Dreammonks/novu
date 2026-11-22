@@ -165,7 +165,10 @@ export async function bootstrap(
     })
   );
 
-  const document = await setupSwagger(app, bootstrapOptions?.internalSdkGeneration);
+  let document: Awaited<ReturnType<typeof setupSwagger>> | undefined;
+  if (process.env.SWAGGER_ENABLED === 'true' || process.env.NODE_ENV !== 'production') {
+    document = await setupSwagger(app, bootstrapOptions?.internalSdkGeneration);
+  }
 
   app.useGlobalFilters(new AllExceptionsFilter(app.get(Logger), app.get(RequestLogRepository)));
 

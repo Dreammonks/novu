@@ -14,4 +14,5 @@ WORKDIR /usr/src/app
 
 COPY --chown=1000:1000 deploy ./
 
+# Direct Node.js execution without PM2 to reduce memory footprint and enable instant SIGTERM propagation
 ENTRYPOINT [ "node", "dist/main.js" ]
